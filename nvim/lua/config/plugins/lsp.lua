@@ -1,5 +1,12 @@
 return {
   {
+    "williamboman/mason.nvim",
+    config = function()
+      require("mason").setup({})
+    end,
+  },
+  { "williamboman/mason-lspconfig.nvim" },
+  {
     "neovim/nvim-lspconfig",
     dependencies = {
       "Saghen/blink.cmp",
@@ -19,6 +26,27 @@ return {
       local capabilities = require('blink.cmp').get_lsp_capabilities()
       require("lspconfig").lua_ls.setup({ capabilities = capabilities })
       require("lspconfig").clangd.setup({ capabilities = capabilities })
+      require('lspconfig').pylsp.setup({
+        settings = {
+          pylsp = {
+            plugins = {
+              pycodestyle = {
+                ignore = { 'W391' },
+                maxLineLength = 100
+              }
+            }
+          }
+        }
+      })
+      require('lspconfig').rust_analyzer.setup({
+        settings = {
+          ['rust-analyzer'] = {
+            diagnostics = {
+              enable = false,
+            }
+          }
+        }
+      })
 
       -- Auto format code before write
       vim.api.nvim_create_autocmd('LspAttach', {
@@ -38,5 +66,5 @@ return {
         end,
       })
     end,
-  }
+  },
 }
