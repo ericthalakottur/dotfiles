@@ -5,7 +5,20 @@ return {
       require("mason").setup({})
     end,
   },
-  { "williamboman/mason-lspconfig.nvim" },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    config = function()
+      require("mason-lspconfig").setup({
+        ensure_installed = {
+          "lua_ls",
+          "clangd",
+          "pylsp",
+          "rust_analyzer",
+          "gopls",
+        }
+      })
+    end,
+  },
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -24,9 +37,11 @@ return {
     },
     config = function()
       local capabilities = require('blink.cmp').get_lsp_capabilities()
-      require("lspconfig").lua_ls.setup({ capabilities = capabilities })
-      require("lspconfig").clangd.setup({ capabilities = capabilities })
-      require('lspconfig').pylsp.setup({
+      local lspconfig = require('lspconfig')
+
+      lspconfig.lua_ls.setup({ capabilities = capabilities })
+      lspconfig.clangd.setup({ capabilities = capabilities })
+      lspconfig.pylsp.setup({
         settings = {
           pylsp = {
             plugins = {
@@ -38,7 +53,7 @@ return {
           }
         }
       })
-      require('lspconfig').rust_analyzer.setup({
+      lspconfig.rust_analyzer.setup({
         settings = {
           ['rust-analyzer'] = {
             diagnostics = {
@@ -47,6 +62,7 @@ return {
           }
         }
       })
+      lspconfig.gopls.setup({})
 
       -- Auto format code before write
       vim.api.nvim_create_autocmd('LspAttach', {
